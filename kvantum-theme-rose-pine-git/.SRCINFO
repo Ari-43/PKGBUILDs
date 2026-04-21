@@ -1,0 +1,15 @@
+pkgbase = kvantum-theme-rose-pine-git-git
+	pkgdesc = Rose Pine themes for Kvantum
+	pkgver = r9.816e338
+	pkgrel = 1
+	url = https://github.com/rose-pine/kvantum
+	arch = any
+	license = MIT
+	makedepends = git
+	makedepends = tar
+	depends = kvantum
+	optdepends = rose-pine-gtk-theme: Matching GTK theme
+	source = kvantum-theme-rose-pine-git::git+https://github.com/rose-pine/kvantum
+	sha256sums = SKIP
+
+pkgname = kvantum-theme-rose-pine-git-git

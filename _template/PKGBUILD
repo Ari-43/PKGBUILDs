@@ -1,0 +1,47 @@
+# Maintainer: Ari43 <arirera43 [at] gmail [dot] com>
+_pkgname=
+pkgname=
+pkgver=0.1
+pkgrel=1
+pkgdesc=""
+arch=()
+url=""
+license=('')
+groups=()
+depends=()
+makedepends=('git')
+provides=("${pkgname%-git}")
+conflicts=("${pkgname%-git}")
+replaces=()
+backup=()
+options=()
+install=
+source=("${pkgname%-git}::git+https://example.com/remote.git")
+noextract=()
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "$srcdir/${pkgname%-git}"
+
+	# https://wiki.archlinux.org/title/VCS_package_guidelines#Git
+	# Git, tags available
+	#printf "%s" "$(git describe --long | sed 's/\([^-]*-\)g/r\1/;s/-/./g')"
+	# Git, no tags available
+	#printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+	cd "$srcdir/${pkgname%-git}"
+}
+
+build() {
+	cd "$srcdir/${pkgname%-git}"
+}
+
+check() {
+	cd "$srcdir/${pkgname%-git}"
+}
+
+package() {
+	cd "$srcdir/${pkgname%-git}"
+}

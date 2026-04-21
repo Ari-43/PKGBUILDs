@@ -1,0 +1,77 @@
+# Maintainer: Ari43 <arirera43 [at] gmail [dot] com>
+_pkgname="rose-pine-korpsvart-gtk-theme"
+pkgname="$_pkgname-git"
+pkgver=r48.c4fdfa6
+pkgrel=1
+pkgdesc="@korpsvart's take on the Rose Pine GTK theme"
+arch=(any)
+url="https://github.com/Fausto-Korpsvart/Rose-Pine-GTK-Theme"
+license=('GPL')
+groups=()
+depends=(gtk-engine-murrine)
+optdepends=('libadwaita-without-adwaita: Use with Libadwaita applications')
+makedepends=('git' 'parallel') 
+provides=("$_pkgname")
+conflicts=("$_pkgname")
+replaces=()
+backup=()
+options=(!strip)
+install=
+source=(
+	"${_pkgname}::git+https://github.com/Fausto-Korpsvart/Rose-Pine-GTK-Theme"
+	"parallel-fix.patch"
+)
+sha256sums=('SKIP'
+            'f97c36f077dbb137f1e12cbcbafda25c009a4c0aa52dfaac3292aaab21d468a6')
+
+pkgver() {
+  cd "$_pkgname"
+  ( set -o pipefail
+    git describe --long --abbrev=7 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
+  )
+}
+
+prepare() {
+	cd "$srcdir/$_pkgname"
+	patch -p1 < "$srcdir/parallel-fix.patch"
+}
+
+package() {
+	cd "$srcdir/$_pkgname/themes/"
+	dest="${pkgdir}/usr/share/themes"
+	mkdir -p "${dest}"
+	faster_build=1
+	# Using faster_build is about 5x faster on my 6c12t system. 
+	# This is stable from my testing, but the above variable can be changed to 0 to disable it if needed
+	if [[ $faster_build == 1 ]]; then
+		echo 'Using GNU parallel for drastically faster packaging.'
+		echo 'Please report any issues you encounter.'
+		parallel --halt now,fail=1 ::: \
+			"./install.sh --name ${_pkgname} 	 --theme all --dest ${dest}"\
+			"./install.sh --name ${_pkgname} 	 --theme all --dest ${dest} --size   compact"\
+			"./install.sh --name ${_pkgname} 	 --theme all --dest ${dest} --tweaks moon"\
+			"./install.sh --name ${_pkgname} 	 --theme all --dest ${dest} --tweaks moon    --size compact"\
+			"./install.sh --name ${_pkgname}-Black   --theme all --dest ${dest} --tweaks black"\
+			"./install.sh --name ${_pkgname}-Black   --theme all --dest ${dest} --tweaks black   --size compact"\
+			"./install.sh --name ${_pkgname}-Float   --theme all --dest ${dest} --tweaks float"\
+			"./install.sh --name ${_pkgname}-Float   --theme all --dest ${dest} --tweaks float   --size compact"\
+			"./install.sh --name ${_pkgname}-Outline --theme all --dest ${dest} --tweaks outline"\
+			"./install.sh --name ${_pkgname}-Outline --theme all --dest ${dest} --tweaks outline --size compact"\
+			"./install.sh --name ${_pkgname}-macOS   --theme all --dest ${dest} --tweaks macos"\
+			"./install.sh --name ${_pkgname}-macOS   --theme all --dest ${dest} --tweaks macos   --size compact"
+	else
+		./install.sh --name ${_pkgname} 	--theme all --dest ${dest}
+		./install.sh --name ${_pkgname} 	--theme all --dest ${dest} --size   compact
+		./install.sh --name ${_pkgname} 	--theme all --dest ${dest} --tweaks moon
+		./install.sh --name ${_pkgname} 	--theme all --dest ${dest} --tweaks moon    --size compact
+		./install.sh --name ${_pkgname}-Black   --theme all --dest ${dest} --tweaks black
+		./install.sh --name ${_pkgname}-Black   --theme all --dest ${dest} --tweaks black   --size compact
+		./install.sh --name ${_pkgname}-Float   --theme all --dest ${dest} --tweaks float
+		./install.sh --name ${_pkgname}-Float   --theme all --dest ${dest} --tweaks float   --size compact
+		./install.sh --name ${_pkgname}-Outline --theme all --dest ${dest} --tweaks outline
+		./install.sh --name ${_pkgname}-Outline --theme all --dest ${dest} --tweaks outline --size compact
+		./install.sh --name ${_pkgname}-macOS   --theme all --dest ${dest} --tweaks macos
+		./install.sh --name ${_pkgname}-macOS   --theme all --dest ${dest} --tweaks macos   --size compact
+	fi
+}

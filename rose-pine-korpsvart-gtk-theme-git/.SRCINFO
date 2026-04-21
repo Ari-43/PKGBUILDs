@@ -1,0 +1,20 @@
+pkgbase = rose-pine-korpsvart-gtk-theme-git
+	pkgdesc = @korpsvart's take on the Rose Pine GTK theme
+	pkgver = r48.c4fdfa6
+	pkgrel = 1
+	url = https://github.com/Fausto-Korpsvart/Rose-Pine-GTK-Theme
+	arch = any
+	license = GPL
+	makedepends = git
+	makedepends = parallel
+	depends = gtk-engine-murrine
+	optdepends = libadwaita-without-adwaita: Use with Libadwaita applications
+	provides = rose-pine-korpsvart-gtk-theme
+	conflicts = rose-pine-korpsvart-gtk-theme
+	options = !strip
+	source = rose-pine-korpsvart-gtk-theme::git+https://github.com/Fausto-Korpsvart/Rose-Pine-GTK-Theme
+	source = parallel-fix.patch
+	sha256sums = SKIP
+	sha256sums = f97c36f077dbb137f1e12cbcbafda25c009a4c0aa52dfaac3292aaab21d468a6
+
+pkgname = rose-pine-korpsvart-gtk-theme-git

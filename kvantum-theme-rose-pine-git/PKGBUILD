@@ -1,0 +1,41 @@
+# Maintainer: Ari43 <arirera43 [at] gmail [dot] com>
+
+_pkgname="kvantum-theme-rose-pine-git"
+pkgname="$_pkgname-git"
+pkgver=r9.816e338
+pkgrel=1
+pkgdesc="Rose Pine themes for Kvantum"
+arch=('any')
+url="https://github.com/rose-pine/kvantum"
+license=('MIT')
+depends=('kvantum')
+makedepends=('git' 'tar')
+optdepends=('rose-pine-gtk-theme: Matching GTK theme')
+source=("$_pkgname::git+https://github.com/rose-pine/kvantum")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd "$_pkgname"
+  ( set -o pipefail
+    git describe --long --abbrev=7 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
+  )
+}
+
+build() {
+	cd $srcdir/$_pkgname/
+	mkdir -p usr/share/Kvantum/
+	for theme in ./dist/*; do
+		tar -xf $theme --directory $srcdir/$_pkgname/usr/share/Kvantum/
+	done
+}
+
+package() {
+	for srcthemedir in $srcdir/$_pkgname/usr/share/Kvantum/*; do
+		themename=${srcthemedir##*/}
+		pkgthemedir=$pkgdir/usr/share/Kvantum/$themename/
+		echo "Installing $themename"
+		install -d $pkgthemedir
+		install -Dm644 $srcthemedir/* -t $pkgthemedir
+	done
+}
